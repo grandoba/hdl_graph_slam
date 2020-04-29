@@ -19,3 +19,12 @@ Simple readme file for our use.
 
 ### Objective 4: matching functions with other sensor data
 * camera data, road sign, etc
+
+## Logs
+
+### 2020-04-29
+#### sangname KETI dataset으로 hdl graph slam을 돌렸음
+ - 문제: slam이 돌아가다가 끊김. 왜 그런지 파악하기
+
+
+
