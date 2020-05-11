@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   geodesy
   nmea_msgs
   sensor_msgs
+  novatel_gps_msgs
   message_generation
   interactive_markers
   ndt_omp
@@ -121,4 +122,3 @@ target_link_libraries(hdl_graph_slam_nodelet
   ${G2O_TYPES_SLAM3D_ADDONS}
 )
 add_dependencies(hdl_graph_slam_nodelet ${PROJECT_NAME}_gencpp)
-

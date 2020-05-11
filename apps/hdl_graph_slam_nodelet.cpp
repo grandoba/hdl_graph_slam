@@ -23,6 +23,7 @@
 #include <std_msgs/Time.h>
 #include <nav_msgs/Odometry.h>
 #include <nmea_msgs/Sentence.h>
+#include <novatel_gps_msgs/Inspva.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/PointCloud2.h>
@@ -114,6 +115,7 @@ public:
       gps_sub = mt_nh.subscribe("/gps/geopoint", 1024, &HdlGraphSlamNodelet::gps_callback, this);
       nmea_sub = mt_nh.subscribe("/gpsimu_driver/nmea_sentence", 1024, &HdlGraphSlamNodelet::nmea_callback, this);
       navsat_sub = mt_nh.subscribe("/gps/navsat", 1024, &HdlGraphSlamNodelet::navsat_callback, this);
+      novatel_sub = mt_nh.subscribe("/inspva", 1024, &HdlGraphSlamNodelet::novatel_callback, this);
     }
 
     // publishers
@@ -259,6 +261,16 @@ private:
     gps_msg->position.latitude = navsat_msg->latitude;
     gps_msg->position.longitude = navsat_msg->longitude;
     gps_msg->position.altitude = navsat_msg->altitude;
+    gps_callback(gps_msg);
+  }
+
+// https://github.com/swri-robotics/novatel_gps_driver/blob/master/novatel_gps_msgs/msg/Inspva.msg
+  void novatel_callback(const novatel_gps_msgs::InspvaPtr& novatel_gps_msgs) {
+    geographic_msgs::GeoPointStampedPtr gps_msg(new geographic_msgs::GeoPointStamped());
+    gps_msg->header = novatel_gps_msgs->header;
+    gps_msg->position.latitude = novatel_gps_msgs->latitude;
+    gps_msg->position.longitude = novatel_gps_msgs->longitude;
+    gps_msg->position.altitude = novatel_gps_msgs->height;
     gps_callback(gps_msg);
   }
 
@@ -583,7 +595,7 @@ private:
       anchor_node->setEstimate(anchor_target);
     }
 
-    // optimize the pose graph
+    // // optimize the pose graph
     int num_iterations = private_nh.param<int>("g2o_solver_num_iterations", 1024);
     graph_slam->optimize(num_iterations);
 
@@ -914,6 +926,7 @@ private:
   ros::Subscriber gps_sub;
   ros::Subscriber nmea_sub;
   ros::Subscriber navsat_sub;
+  ros::Subscriber novatel_sub;
 
   ros::Subscriber imu_sub;
   ros::Subscriber floor_sub;
